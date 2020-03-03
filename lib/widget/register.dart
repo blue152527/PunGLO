@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:punglo/utility/my_style.dart';
@@ -24,7 +25,7 @@ class _RegisterState extends State<Register> {
         left: 50.0,
         right: 50.0,
       ),
-      child: TextField(
+      child: TextField(keyboardType: TextInputType.emailAddress,
         onChanged: (String string) {
           email = string.trim();
         },
@@ -168,15 +169,34 @@ class _RegisterState extends State<Register> {
       icon: Icon(Icons.cloud_upload),
       onPressed: () {
         if (file == null) {
-          normalDialog(context, 'Non Choose Avater', 'Please Tap Camera or Gallery');
-        } else if (name == null || name.isEmpty || email == null || email.isEmpty || password == null || password.isEmpty) {
+          normalDialog(
+              context, 'Non Choose Avater', 'Please Tap Camera or Gallery');
+        } else if (name == null ||
+            name.isEmpty ||
+            email == null ||
+            email.isEmpty ||
+            password == null ||
+            password.isEmpty) {
           normalDialog(context, 'Have Space', 'Please Fill Every Blank');
         } else {
-
+          registerFirebase();
         }
       },
       tooltip: 'Upload to Firebase',
     );
+  }
+
+  Future<void> registerFirebase() async {
+    FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+    await firebaseAuth
+        .createUserWithEmailAndPassword(email: email, password: password)
+        .then((response) {
+          print('Register Success');
+        }).catchError((error) {
+          String title = error.code;
+          String message = error.message;
+          normalDialog(context, title, message);
+        });
   }
 
   @override
