@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "963863840064",
+    "firebase_url": "https://pun-glo.firebaseio.com",
+    "project_id": "pun-glo",
+    "storage_bucket": "pun-glo.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:963863840064:android:2e35ea2d52849b5821a6a5",
+        "android_client_info": {
+          "package_name": "com.flutterthailand.punglo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "963863840064-ffna7ka2fam0kqtrfigob5qqa7qmpcai.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD4PdibjbnNANpah7aw5qoMRDiixl9r5ks"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "963863840064-ffna7ka2fam0kqtrfigob5qqa7qmpcai.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
