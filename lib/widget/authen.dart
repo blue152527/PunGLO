@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:punglo/utility/my_style.dart';
+import 'package:punglo/widget/register.dart';
 
 class Authen extends StatefulWidget {
   @override
@@ -43,7 +44,13 @@ class _AuthenState extends State<Authen> {
             color: MyStyle().darkColor,
           ),
         ),
-        onPressed: () {},
+        onPressed: () {
+          print('You Click Sign Up');
+
+          MaterialPageRoute route = MaterialPageRoute(builder: (BuildContext buildContext){ return Register();});
+          Navigator.of(context).push(route);
+
+        },
       ),
     );
   }
