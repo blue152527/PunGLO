@@ -22,7 +22,6 @@ class _MyServiceState extends State<MyService> {
       leading: Icon(
         Icons.exit_to_app,
         size: 36.0,
-        color: Colors.red,
       ),
     );
   }
