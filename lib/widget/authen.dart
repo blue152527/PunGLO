@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:punglo/utility/my_style.dart';
+import 'package:punglo/widget/my_service.dart';
 import 'package:punglo/widget/register.dart';
 
 class Authen extends StatefulWidget {
@@ -9,8 +11,37 @@ class Authen extends StatefulWidget {
 
 class _AuthenState extends State<Authen> {
 // Field
-
+  bool status = true;
 // Method
+  @override
+  void initState() {
+    super.initState();
+    checkStatus();
+  }
+
+  Future<void> checkStatus() async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    FirebaseUser firebaseUser = await auth.currentUser();
+    if (firebaseUser != null) {
+      MaterialPageRoute route =
+          MaterialPageRoute(builder: (BuildContext buildContext) {
+        return MyService();
+      });
+      Navigator.of(context).pushAndRemoveUntil(route, (Route<dynamic> route) {
+        return false;
+      });
+    } else {
+      setState(() {
+        status = false;
+      });
+    }
+  }
+
+  Widget showProcess() {
+    return Center(
+      child: CircularProgressIndicator(),
+    );
+  }
 
   Widget mySizeBox() {
     return SizedBox(
@@ -47,9 +78,11 @@ class _AuthenState extends State<Authen> {
         onPressed: () {
           print('You Click Sign Up');
 
-          MaterialPageRoute route = MaterialPageRoute(builder: (BuildContext buildContext){ return Register();});
+          MaterialPageRoute route =
+              MaterialPageRoute(builder: (BuildContext buildContext) {
+            return Register();
+          });
           Navigator.of(context).push(route);
-
         },
       ),
     );
@@ -112,25 +145,28 @@ class _AuthenState extends State<Authen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: RadialGradient(
-            colors: <Color>[
-              Colors.white,
-              MyStyle().primaryColor],radius: 1.5,
-          ),
+      body: status ? showProcess() : mainContent(),
+    );
+  }
+
+  Container mainContent() {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: RadialGradient(
+          colors: <Color>[Colors.white, MyStyle().primaryColor],
+          radius: 1.5,
         ),
-        child: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              showLogo(),
-              showAppName(),
-              userForm(),
-              pwdForm(),
-              showButtton(),
-            ],
-          ),
+      ),
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            showLogo(),
+            showAppName(),
+            userForm(),
+            pwdForm(),
+            showButtton(),
+          ],
         ),
       ),
     );
