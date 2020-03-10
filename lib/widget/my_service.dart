@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:punglo/container/show_list_product.dart';
+import 'package:punglo/container/show_map.dart';
 import 'package:punglo/utility/my_style.dart';
 import 'package:punglo/widget/authen.dart';
 
@@ -10,8 +12,79 @@ class MyService extends StatefulWidget {
 
 class _MyServiceState extends State<MyService> {
   //Field
+  String nameLogin, emailLogin, urlAvatarLogin;
+  Widget currentWidget = ShowListProduct();
 
   //Method
+  @override
+  void initState() {
+    super.initState();
+    findUser();
+  }
+
+  Future<void> findUser() async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    FirebaseUser firebaseUser = await auth.currentUser();
+    setState(() {
+      nameLogin = firebaseUser.displayName;
+      emailLogin = firebaseUser.email;
+      urlAvatarLogin = firebaseUser.photoUrl;
+    });
+  }
+
+  Widget menuListProduct() {
+    return ListTile(
+      onTap: () {
+        setState(() {
+          currentWidget = ShowListProduct();
+        });
+        Navigator.of(context).pop();
+      },
+      subtitle: Text('Show List Product From JSON'),
+      title: Text('List Product'),
+      leading: Icon(
+        Icons.home,
+        size: 36.0,
+        color: MyStyle().darkColor,
+      ),
+    );
+  }
+
+  Widget menuMap() {
+    return ListTile(
+      onTap: () {
+        setState(() {
+          currentWidget = ShowMap();
+        });
+        Navigator.of(context).pop();
+      },
+      subtitle: Text('Show Map and Get Location'),
+      title: Text('Show Map'),
+      leading: Icon(
+        Icons.map,
+        size: 36.0,
+        color: Colors.purple,
+      ),
+    );
+  }
+
+  Widget showAvatar() {
+    return urlAvatarLogin == null
+        ? Image.network(MyStyle().urlAvatar)
+        : showNetworkAvatar();
+  }
+
+  Widget showNetworkAvatar() {
+    return ClipOval(
+      child: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+              image: NetworkImage(urlAvatarLogin), fit: BoxFit.cover),
+        ),
+      ),
+    );
+  }
+
   Widget menuSignOut() {
     return ListTile(
       onTap: () {
@@ -22,6 +95,7 @@ class _MyServiceState extends State<MyService> {
       leading: Icon(
         Icons.exit_to_app,
         size: 36.0,
+        color: Colors.red,
       ),
     );
   }
@@ -36,20 +110,41 @@ class _MyServiceState extends State<MyService> {
 
   Widget showHeader() {
     return UserAccountsDrawerHeader(
-        accountName: Text('Name Login'), accountEmail: Text('Email Login'));
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('images/drawerheader.jpg'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        currentAccountPicture: showAvatar(),
+        accountName: showName(),
+        accountEmail: showEmail());
+  }
+
+  Text showEmail() {
+    return emailLogin == null ? Text('Email Login') : Text(emailLogin);
+  }
+
+  Text showName() {
+    return nameLogin == null ? Text('Name Login') : Text('$nameLogin Login');
   }
 
   Widget showDrawer() {
     return Drawer(
       child: ListView(
-        children: <Widget>[showHeader(), menuSignOut()],
+        children: <Widget>[
+          showHeader(),
+          menuListProduct(),
+          menuMap(),
+          menuSignOut(),
+        ],
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Scaffold(body: currentWidget,
       drawer: showDrawer(),
       appBar: AppBar(
         title: Text('My Service'),
